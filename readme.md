@@ -1,9 +1,11 @@
 # 象棋麻將 · 棋仔自摸 / Chinese Chess Mahjong
 
 > 一款以中國象棋棋子為牌面的麻將變體遊戲。純前端實現，打開瀏覽器即可遊玩。  
-> A麻将 variant using Chinese chess pieces as tiles. Pure frontend, no backend required.
+> A mahjong variant using Chinese chess pieces as tiles. Pure frontend, no backend required.
 
-🎮 **立即遊玩 / Play Now**：下載或 clone 本 repo，打開 `index.html`
+🎮 **立即遊玩 / Play Now**：
+- 🌐 **線上版**：[https://xiangqi-majiang.netlify.app](https://xiangqi-majiang.netlify.app)
+- 💾 **離線版**：下載或 clone 本 repo，打開 `index.html`
 
 ---
 
