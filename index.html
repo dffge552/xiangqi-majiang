@@ -1093,7 +1093,7 @@
     <div class="settle-list" id="settle-list"></div>
     <div>
       <button class="win-btn" onclick="restartGame()">再來一局</button>
-      <button class="win-btn" onclick="showScreen('home')" style="background:rgba(255,255,255,0.1);color:var(--ivory)">回大廳</button>
+      <button class="win-btn" onclick="event.stopPropagation(); showScreen('home')" style="background:rgba(255,255,255,0.1);color:var(--ivory)">回大廳</button>
     </div>
   </div>
 </div>
@@ -2866,24 +2866,57 @@
   //  SCREEN MANAGEMENT
   // ═══════════════════════════════════════════════════
   function showScreen(name) {
-    // 離開 game 畫面時若賭桌對局未結束，視為強退扣款
-    if (name !== 'game') {
+    // 強制關閉所有可能干擾畫面的浮層
+    document.getElementById('win-overlay')?.classList.remove('show');
+    document.getElementById('opp-action-overlay')?.classList.remove('show');
+    document.getElementById('mode-modal')?.classList.remove('show');
+    document.getElementById('edit-hand-overlay')?.classList.remove('show');
+    document.getElementById('edit-discard-overlay')?.classList.remove('show');
+    document.getElementById('dealer-pick-overlay')?.classList.remove('show');
+    document.getElementById('tile-picker-overlay')?.classList.remove('show');
+
+    // 只有在「遊戲尚未結束」且「正在離開遊戲畫面」時，才視為強退扣款
+    const isLeavingGame = name !== 'game';
+    const isGameActive = G && G.players && !G.gameOver;
+    const isGameScreenActive = document.getElementById('game')?.classList.contains('active');
+
+    if (isLeavingGame && isGameActive && isGameScreenActive) {
       const penalty = getForfeitPenalty();
       if (penalty > 0) {
         const coins = loadCoins();
         coins.player = Math.max(0, coins.player - penalty);
         saveCoins(coins);
         updateHeaderCoins();
-        setTimeout(() => alert(`⚠ 中途離場！扣除 ${fmtCoins(penalty)} 帥幣（台數 × 5 懲罰）`), 100);
+        alert(`⚠ 中途離場！扣除 ${fmtCoins(penalty)} 帥幣（台數 × 5 懲罰）`);
       }
     }
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(name).classList.add('active');
-    document.querySelectorAll('nav button').forEach((btn, i) => {
-      btn.classList.toggle('active', ['home','rules'][i] === name);
-    });
-  }
 
+    // 切換畫面
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const targetScreen = document.getElementById(name);
+    if (targetScreen) {
+      targetScreen.classList.add('active');
+    } else {
+      console.error(`Screen "${name}" not found`);
+      return;
+    }
+
+    // 更新導航按鈕樣式
+    const navHome = document.querySelector('nav button:nth-child(1)');
+    const navRules = document.querySelector('nav button:nth-child(2)');
+    if (navHome) navHome.classList.toggle('active', name === 'home');
+    if (navRules) navRules.classList.toggle('active', name === 'rules');
+
+    // 如果回到大廳，強制重置遊戲相關的全域變數，避免狀態殘留
+    if (name === 'home') {
+      G = {};
+      G_DEALER_IDX = -1;
+      G_SANDBOX = false;
+      G_PRACTICE = false;
+      document.getElementById('ingame-analysis-result').style.display = 'none';
+    }
+  }
+  
   // ═══════════════════════════════════════════════════
   //  AI 分析模式
   // ═══════════════════════════════════════════════════
