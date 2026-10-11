@@ -60,8 +60,8 @@ Chinese Chess Mahjong uses Chinese chess pieces instead of standard mahjong tile
 
 ### 核心發現 / Core Discovery
 
-透過 **200 萬次 MCCFR 迭代實驗** 與 **完整數學證明**，本研究確認：  
-Through **2 million MCCFR iterations** and **complete mathematical proof**, this research confirms:
+透過 **完整數學證明**，本研究確認：  
+Through **complete mathematical proof**, this research confirms:
 
 > **象棋麻將 32 張兩人版是一個「已解決博弈」。**  
 > **The 2-player 32-tile version of Chinese Chess Mahjong is a "solved game".**
